@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste des propriétés</title>
+  <style>
+    .property {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      width: 400px;
+    }
+    img {
+      width: 100%;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏠 Propriétés disponibles</h1>
+  <div id="properties"></div>
+
+  <script>
+    async function fetchProperties() {
+      const response = await fetch('http://localhost:8000/api/properties/?status=PUBLISHED');
+      const data = await response.json();
+
+      const container = document.getElementById('properties');
+      container.innerHTML = ''; // vider avant affichage
+
+      data.results.forEach(prop => {
+        const div = document.createElement('div');
+        div.className = 'property';
+        div.innerHTML = `
+          <img src="${prop.primary_photo?.url || 'placeholder.jpg'}" alt="photo">
+          <h2>${prop.title}</h2>
+          <p><strong>Type :</strong> ${prop.type}</p>
+          <p><strong>Surface :</strong> ${prop.surface} m²</p>
+          <p><strong>Loyer :</strong> ${prop.monthly_rent} FCFA / mois</p>
+          <p><strong>Adresse :</strong> ${prop.address.full_address}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    fetchProperties();
+  </script>
+</body>
+</html>
